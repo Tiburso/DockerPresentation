@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management</title>
+</head>
+<body>
+    <h1>User Management</h1>
+
+    <form id="userForm">
+        <input type="text" id="nameInput" placeholder="Name" required>
+        <input type="email" id="emailInput" placeholder="Email" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <h2>Users</h2>
+    <ul id="userList"></ul>
+
+    <script>
+        const userForm = document.getElementById('userForm');
+        const nameInput = document.getElementById('nameInput');
+        const emailInput = document.getElementById('emailInput');
+        const userList = document.getElementById('userList');
+
+        userForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const name = nameInput.value;
+            const email = emailInput.value;
+
+            fetch('http://localhost:5000/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                nameInput.value = '';
+                emailInput.value = '';
+                getUsers();
+            });
+        });
+
+        function getUsers() {
+            fetch('http://localhost:5000/users')
+                .then(response => response.json())
+                .then(data => {
+                    userList.innerHTML = '';
+                    data.forEach(user => {
+                        const li = document.createElement('li');
+                        li.textContent = `Name: ${user.name}, Email: ${user.email}`;
+                        userList.appendChild(li);
+                    });
+                });
+        }
+
+        getUsers();
+    </script>
+</body>
+</html>
