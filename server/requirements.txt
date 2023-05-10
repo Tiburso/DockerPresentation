@@ -1,4 +1,4 @@
 flask
 flask_sqlalchemy
 flask_migrate
-psychopg2
+psycopg2-binary
