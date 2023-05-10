@@ -1,0 +1,26 @@
+FROM python AS builder
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN python -m venv /opt/venv
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY . .
+
+FROM python AS final
+
+WORKDIR /app
+
+COPY --from=builder /opt/venv /opt/venv
+COPY --from=builder /app /app
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+ENTRYPOINT [ "flask", "run"]
+
